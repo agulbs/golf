@@ -6,19 +6,19 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li [routerLinkActive]="['active']" class="nav-item">
+      <li [routerLinkActive]="['active']" class="nav-item" *ngIf="permissions.player==1">
         <a class="nav-link" routerLink="/game">Game</a>
       </li>
-      <li [routerLinkActive]="['active']" class="nav-item ">
+      <li [routerLinkActive]="['active']" class="nav-item" *ngIf="permissions.player==1">
         <a class="nav-link" routerLink="/score">Score Card</a>
       </li>
-      <li [routerLinkActive]="['active']" class="nav-item ">
+      <li [routerLinkActive]="['active']" class="nav-item" *ngIf="permissions.admin==1 || permissions.chief==1 || permissions.captain==1">
         <a class="nav-link" routerLink="/teams">Teams</a>
       </li>
-      <li [routerLinkActive]="['active']" class="nav-item ">
+      <li [routerLinkActive]="['active']" class="nav-item" *ngIf="permissions.admin==1 || permissions.chief==1 || permissions.captain==1">
         <a class="nav-link" routerLink="/matches">Matches</a>
       </li>
-      <li [routerLinkActive]="['active']" class="nav-item ">
+      <li [routerLinkActive]="['active']" class="nav-item" *ngIf="permissions.admin==1">
         <a class="nav-link" routerLink="/admin">Admin</a>
       </li>
     </ul>

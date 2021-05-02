@@ -5,13 +5,13 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class StateService {
-  // private user: Object;
-  private user = {
-    "first": "player",
-    "last": "player",
-    "username": "player",
-    "nick": "player"
-  };
+  private user: Object;
+  // private user = {
+  //   "first": "player",
+  //   "last": "player",
+  //   "username": "player",
+  //   "nick": "player"
+  // };
   private tokens: Object;
   private permissions: Object;
   private session: Object;
@@ -21,13 +21,17 @@ export class StateService {
   private joined: Object;
 
   public _session = new BehaviorSubject<any>({});
+  public _permissions = new BehaviorSubject<any>({});
 
   constructor() { }
 
   public setUser(user) {
+    console.log(user)
     this.user = user.userInfo;
     this.tokens = user.tokens;
     this.permissions = user.permissions;
+
+    this._permissions.next(this.permissions);
   }
 
   public getUser() {
@@ -42,7 +46,6 @@ export class StateService {
     this.session = settings.gameSettings.session;
     this.courses = settings.courses.all;
     this.players = settings.players['all'];
-    this.joined = settings.gameSettings.joinedPlayers.players;
 
     settings.players['all'].forEach((player) => {
       if (player.username == this.user['username']) {
@@ -50,16 +53,22 @@ export class StateService {
       }
     })
 
-    Object.keys(this.joined).forEach(p => {
-      if (this.joined[p].username == this.user['username']) {
-        this.player['joined'] = true;
-        for (var k in this.joined[p]) {
-          if (!(k in this.player)) {
-            this.player[k] = this.joined[p][k];
+    if ('error' in settings.gameSettings.session) {
+      this.joined = {};
+    }
+    else {
+      this.joined = settings.gameSettings.joinedPlayers.players;
+      Object.keys(this.joined).forEach(p => {
+        if (this.joined[p].username == this.user['username']) {
+          this.player['joined'] = true;
+          for (var k in this.joined[p]) {
+            if (!(k in this.player)) {
+              this.player[k] = this.joined[p][k];
+            }
           }
         }
-      }
-    })
+      })
+    }
 
     this._session.next(this.session);
   }
