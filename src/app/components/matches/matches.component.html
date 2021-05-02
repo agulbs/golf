@@ -1,0 +1,54 @@
+<app-navbar></app-navbar>
+<div class="container-fluid">
+  <div class="row mt-2" *ngIf="!sessionFlag;else game_data">
+    <div class="col-12">
+      <div class="card text-center">
+        <div class="card-header">
+          <h5>Start New Game</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12">
+              <select class="form-control" name="course" [(ngModel)]="course">
+                <option [value]="course.id" *ngFor="let course of courses">{{course.name}}</option>
+              </select>
+            </div>
+            <div class="col-12 mt-3">
+              <input type="number" placeholder="Number of teams" name="teams" class="form-control" [(ngModel)]="teams">
+            </div>
+            <div class="col-12 mt-3">
+              <button class="btn btn-primary" style="width:100%" (click)="createGame()">Create Game</button>
+            </div>
+            <div class="col-12 mt-4" *ngIf="createGameErr">
+              <h6>Please make sure you've selected a course & entered the number of teams.</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #game_data>
+    <div class="row mt-2" *ngIf="sessionFlag">
+      <div class="col-12">
+        <div class="card text-center">
+          <div class="card-header">
+            <h5>Todays Game</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12">
+                <h6>Course: {{course}}</h6>
+              </div>
+              <div class="col-12">
+                <h6>Number of teams: {{teams}}</h6>
+              </div>
+              <div class="col-12 mt-3">
+                <button class="btn btn-danger" style="width:75%" (click)="deleteGame()">Delete Game</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
