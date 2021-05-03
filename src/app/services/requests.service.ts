@@ -70,32 +70,30 @@ export class RequestsService {
     });
   }
 
-  public joinGame(game) {
+  public joinGame(game, player, handicap, bet, team) {
     let params = {
       url: "/game/join",
       data: {
         joinGame: {
           session: game.session,
-          username: this.state.getUsername(),
+          username: player.username,
           date: game.date
         }
       }
     }
 
     this.postRequest(params).subscribe((res) => {
-      this.getGameSettings();
+      this.joinTeam(team, player.username, game, handicap, bet)
     }, (err) => { console.log(err) })
-
-
   }
 
-  public leaveGame(game) {
+  public leaveGame(game, player) {
     let params = {
       url: "/game/join",
       data: {
         leaveGame: {
           session: game.session,
-          username: this.state.getUsername(),
+          username: player.username,
           date: game.date
         }
       }
@@ -104,22 +102,86 @@ export class RequestsService {
     this.deleteRequest(params).subscribe((res) => {
       this.getGameSettings();
     });
+  }
 
+  public createTeam(name, session) {
+    let params = {
+      url: "/game/teams",
+      data: {
+        "createTeam": {
+          session: session.session,
+          name: name,
+          captain: this.state.getUsername(),
+          date: session.date,
+        }
+      }
+    }
+
+    this.postRequest(params).subscribe((res) => {
+      this.getGameSettings();
+    }, (err) => { console.log(err) })
+  }
+
+  public joinTeam(team, username, game, handicap, bet) {
+    var params = {
+      url: "/game/teams",
+      data: {
+        "joinTeam": {
+          team: team,
+          username: username,
+          date: game.date
+        }
+      }
+    }
+
+    this.postRequest(params).subscribe((res) => {
+      this.submitBets(handicap, bet, username, game)
+    }, (err) => { console.log(err) })
 
   }
 
+  public submitBets(handicap, bet, username, game) {
+    var params = {
+      url: "/game/bets",
+      data: {
+        "updateBets": {
+          handicap: handicap,
+          frontSideBet: bet,
+          backSideBet: bet,
+          username: username,
+          session: game.session
+        }
+      }
+    }
 
+    this.postRequest(params).subscribe((res) => {
+      this.getGameSettings();
+    }, (err) => { console.log(err) })
+  }
 
+  public deleteTeam(team) {
+    let params = {
+      url: "/game/teams",
+      data: [{
+        "deleteTeam": {
+          session: team.session,
+          name: team.name
+        }
+      }, {
+        "removeMembers": {
+          session: team.session,
+          team: team.name
+        }
+      }]
+    }
 
-  // public getGameSettings() {
-  //   return this.getRequest("/game/settings").pipe(map(
-  //     (res) => {
-  //       this.state.setGameSettings(res);
-  //       return res;
-  //     }
-  //   ));
-  //
-  // }
+    this.deleteRequest(params).subscribe((res) => {
+      this.getGameSettings();
+    });
+
+    console.log(params)
+  }
+
 
   private getRequest(url) {
     return this.http.get(this.url + url);

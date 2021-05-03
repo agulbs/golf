@@ -3,11 +3,13 @@ import { RouterModule, Routes } from "@angular/router";
 import { LoginComponent } from "./components/login/login.component"
 import { GameComponent } from "./components/game/game.component"
 import { MatchesComponent } from "./components/matches/matches.component"
+import { TeamsComponent } from "./components/teams/teams.component"
 
 const routes: Routes = [
   { path: "", component: LoginComponent, pathMatch: 'full' },
   { path: "game", component: GameComponent, pathMatch: 'full' },
   { path: "matches", component: MatchesComponent, pathMatch: 'full' },
+  { path: "teams", component: TeamsComponent, pathMatch: 'full' },
 ];
 
 @NgModule({

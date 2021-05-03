@@ -1,1 +1,51 @@
-<p>teams works!</p>
+<app-navbar></app-navbar>
+<div class="container-fluid">
+  <div class="row mt-2" *ngIf="!noGamesFlag; else no_game">
+    <div class="col-12" *ngIf="!createdTeam; else _team">
+      <div class="card text-center">
+        <div class="card-header">
+          <h5>Create Team</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12">
+              <input type="text" class="form-control" placeholder="Team Name" id="teamName" [(ngModel)]="name">
+            </div>
+            <div class="col-12 mt-3">
+              <button class="btn btn-primary" style="width:100%" (click)="createTeam()">Create Team</button>
+            </div>
+            <div class="col-12 mt-4" *ngIf="nameErr">
+              <h6>Please make sure the team name doesnt already exist & that you entered a team name.</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #_team>
+      <div class="col-12">
+        <div class="card text-center">
+          <div class="card-header">
+            <h5>Your Created Team</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12">
+                <h6>Name: {{team.name}}</h6>
+              </div>
+              <div class="col-12 mt-3">
+                <button class="btn btn-danger" style="width:100%" (click)="deleteTeam()">Delete Team</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+  <ng-template #no_game>
+    <div class="row mt-5">
+      <div class="col-12">
+        <h6>No games found for today. Please wait for a game to be created.</h6>
+      </div>
+    </div>
+  </ng-template>
+</div>

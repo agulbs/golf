@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 <div class="container-fluid">
 
-  <div class="row mt-2" *ngIf="joinGameFlag;else join_game">
+  <div class="row mt-2" *ngIf="joinGameFlag && joinTeamFlag;else join_game">
     <div class="col-12">
       <div class="card text-center">
         <div class="card-header">
@@ -15,14 +15,46 @@
             <div class="col-12 text-start">
               <h6>Number of Teams: {{game.teams}}</h6>
             </div>
-            <div class="col-12" *ngIf="player.joined">
-              <app-bets></app-bets>
+
+            <div class="col-12 d-flex justify-content-center mt-2" *ngIf="!player.joined">
+              <input type="number" class="form-control" name="handicap" placeholder="Handicap" style="width:50%" [(ngModel)]="handicap">
             </div>
-            <!-- <div class="col-12 text-start">
-              <h6>{{game.date}}</h6>
-            </div> -->
+            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!player.joined">
+              <input type="number" class="form-control" name="frontbet" placeholder="Frontside Bet" style="width:50%" [(ngModel)]="frontbet">
+            </div>
+            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!player.joined">
+              <input type="number" class="form-control" name="backbet" placeholder="Backside Bet" style="width:50%" [(ngModel)]="frontbet">
+            </div>
+
+            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!player.joined">
+              <select class="form-control" name="team" [(ngModel)]="team" style="width:50%">
+                <option [value]="team.name" *ngFor="let team of teams">{{team.name}}</option>
+              </select>
+            </div>
+
+            <div class="col-12 d-flex justify-content-center mt-2" *ngIf="player.joined">
+              <h6>Handicap: {{player.handicap}}</h6>
+            </div>
+            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="player.joined">
+              <h6>Front Side Bet: {{player.frontSideBet}}</h6>
+            </div>
+            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="player.joined">
+              <h6>Backside Bet: {{player.frontSideBet}}</h6>
+            </div>
+
+            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="player.joined">
+              <h6>Team: {{player.team}}</h6>
+            </div>
+
+
+
+
             <div class="col-12 mt-3" *ngIf="!player.joined;else leave">
               <button class="btn btn-primary" style="width:70%" (click)="joinGame()">Join Game</button>
+            </div>
+            <div class="col-12 mt-3 d-flex justify-content-center">
+
+              <h6>{{errMsg}}</h6>
             </div>
             <ng-template #leave>
               <div class="col-12 mt-3">
@@ -35,8 +67,11 @@
     </div>
   </div>
   <ng-template #join_game>
-    <div class="row mt-2">
-      <h6>no games to join</h6>
+    <div class="row mt-5">
+      <div class="col-12">
+
+        <h6>No games found for today. Please wait for a game to be created.</h6>
+      </div>
     </div>
 
   </ng-template>

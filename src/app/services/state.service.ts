@@ -6,12 +6,6 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
 })
 export class StateService {
   private user: Object;
-  // private user = {
-  //   "first": "player",
-  //   "last": "player",
-  //   "username": "player",
-  //   "nick": "player"
-  // };
   private tokens: Object;
   private permissions: Object;
   private session: Object;
@@ -19,6 +13,7 @@ export class StateService {
   private players: Object;
   private player: Object;
   private joined: Object;
+  private teams: Array<any>;
 
   public _session = new BehaviorSubject<any>({});
   public _permissions = new BehaviorSubject<any>({});
@@ -40,6 +35,7 @@ export class StateService {
 
   public getUsername() {
     return this.user['username'];
+    // return 'captain'
   }
 
   public setGameSettings(settings) {
@@ -49,6 +45,7 @@ export class StateService {
 
     settings.players['all'].forEach((player) => {
       if (player.username == this.user['username']) {
+        // if (player.username == 'captain') {
         this.player = player;
       }
     })
@@ -57,9 +54,11 @@ export class StateService {
       this.joined = {};
     }
     else {
+      this.teams = settings.gameSettings.createadTeams.teams;
       this.joined = settings.gameSettings.joinedPlayers.players;
       Object.keys(this.joined).forEach(p => {
         if (this.joined[p].username == this.user['username']) {
+          // if (this.joined[p].username == 'captain') {
           this.player['joined'] = true;
           for (var k in this.joined[p]) {
             if (!(k in this.player)) {
@@ -83,6 +82,11 @@ export class StateService {
 
   public getPlayer() {
     return this.player;
+  }
+
+  public getTeams() {
+    return this.teams;
+    console.log(this.teams)
   }
 
   public setSession() { }
