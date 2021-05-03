@@ -17,6 +17,7 @@ export class StateService {
 
   public _session = new BehaviorSubject<any>({});
   public _permissions = new BehaviorSubject<any>({});
+  public _upermissions = new BehaviorSubject<any>({});
 
   constructor() { }
 
@@ -69,7 +70,13 @@ export class StateService {
       })
     }
 
+    console.log(this.player)
+
     this._session.next(this.session);
+  }
+
+  public setUserPerms(permissions) {
+    this._upermissions.next(permissions);
   }
 
   public getSession() {
@@ -82,6 +89,10 @@ export class StateService {
 
   public getPlayer() {
     return this.player;
+  }
+
+  public getPlayers() {
+    return this.players;
   }
 
   public getTeams() {

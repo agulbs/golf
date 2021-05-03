@@ -154,6 +154,7 @@ export class RequestsService {
       }
     }
 
+
     this.postRequest(params).subscribe((res) => {
       this.getGameSettings();
     }, (err) => { console.log(err) })
@@ -180,6 +181,102 @@ export class RequestsService {
     });
 
     console.log(params)
+  }
+
+  public updateScores(scores, player) {
+    let params = {
+      url: "/game/scores",
+      data: {
+        "updateScores": {
+          scores: scores,
+          username: player.username,
+          session: player.session,
+        }
+      }
+    };
+
+    this.postRequest(params).subscribe((res) => {
+      this.getGameSettings();
+    });
+  }
+
+  public getUserPerms() {
+    let params = {
+      url: "/game/players/all",
+      data: {
+        "verifyAdminRole": {
+          // username: sessionStorage.getItem('user')
+          username: 'admin'
+        }
+      }
+    }
+
+    this.postRequest(params).subscribe((res) => {
+      if (res['status'] == 200) {
+        this.state.setUserPerms(res['success']['data'])
+      }
+    });
+  }
+
+  public updatePerms(player) {
+    var fields = {
+      admin: 0,
+      chief: 0,
+      captain: 0,
+      player: 0,
+      username: player.username
+    }
+
+    let params = {
+      url: "/user/update/perms",
+      data: {
+        "updatePerms": {
+          admin: player.admin ? 1 : 0,
+          chief: player.chief ? 1 : 0,
+          captain: player.captain ? 1 : 0,
+          player: player.player ? 1 : 0,
+          username: player.username
+        }
+      }
+    }
+
+    this.postRequest(params).subscribe((res) => {
+      if (res['status'] == 200) {
+        this.getUserPerms();
+      }
+    });
+  }
+
+  public createUser(user) {
+    let params = {
+      url: "/user/register",
+      type: "POST",
+      data: {
+        "registerUser": {
+          uData: {
+            first: user.first,
+            last: user.last,
+            username: user.username,
+            nick: user.nick,
+            password: user.password
+          },
+          uPerms: {
+            admin: user.admin ? 1 : 0,
+            captain: user.captain ? 1 : 0,
+            chief: user.chief ? 1 : 0,
+            player: user.player ? 1 : 0,
+            user: 0
+          }
+        }
+      }
+    }
+
+    this.postRequest(params).subscribe((res) => {
+      console.log(res)
+      this.getUserPerms();
+    });
+
+
   }
 
 

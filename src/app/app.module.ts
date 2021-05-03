@@ -12,7 +12,8 @@ import { TeamsComponent } from './components/teams/teams.component';
 import { GameComponent } from './components/game/game.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { MatchesComponent } from './components/matches/matches.component';
-import { BetsComponent } from './components/bets/bets.component';
+import { ScoresComponent } from './components/scores/scores.component';
+import { AdminComponent } from './components/admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { BetsComponent } from './components/bets/bets.component';
     GameComponent,
     NavbarComponent,
     MatchesComponent,
-    BetsComponent
+    ScoresComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,

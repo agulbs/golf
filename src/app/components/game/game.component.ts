@@ -10,6 +10,7 @@ import { StateService } from '../../services/state.service';
 export class GameComponent implements OnInit {
   public joinGameFlag;
   public joinTeamFlag;
+  public scorecardFlag;
   public game: Object;
   public teams: Array<any>;
   public player: Object;
@@ -41,13 +42,15 @@ export class GameComponent implements OnInit {
           this.joinGameFlag = true;
 
           this.teams = this.state.getTeams();
-          console.log(this.teams)
           if (this.teams.length == 0) {
             this.joinTeamFlag = false;
           } else {
             this.joinTeamFlag = true;
             this.game = session;
             this.player = this.state.getPlayer();
+            if ('joined' in this.player) {
+              this.scorecardFlag = true;
+            }
           }
         }
       }, 1);
