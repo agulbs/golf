@@ -42,13 +42,33 @@
               <div class="col-12">
                 <h6>Number of teams: {{teams}}</h6>
               </div>
-              <div class="col-12 mt-3">
-                <button class="btn btn-danger" style="width:75%" (click)="deleteGame()">Delete Game</button>
+              <div class="col-12 mt-3 mb-3">
+                <button class="btn btn-success" style="width:75%" (click)="calculateScores()">Calculate Scores</button>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="col-12 mt-5">
+
+        <div class="card text-center">
+          <div class="card-header">
+            <h5>Delete Todays Game</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+
+              <div class="col-12 mt-3 mb-3">
+                <button class="btn btn-danger" style="width:75%" (click)="deleteGame()">Delete Game</button> </div>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+
     </div>
   </ng-template>
 </div>

@@ -6,23 +6,29 @@
     <div class="col-3 d-flex">
       <h6>Hole</h6>
     </div>
-    <div class="col-6 d-flex  justify-content-center">
+    <div class="col-4 d-flex  justify-content-center">
       <h6>Score</h6>
     </div>
-    <div class="col-3">
-      <h6>HCP</h6>
+    <div class="col-5">
+      <h6>HCP Order</h6>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <hr>
     </div>
   </div>
   <div class="row mt-2" *ngFor="let score of scores; let i = index;trackBy:trackByIndex;">
     <div class="col-3 mt-2 d-flex ">
       <h6>{{i+1}}</h6>
     </div>
-    <div class="col-6 d-flex  justify-content-center">
+    <div class="col-4 d-flex  justify-content-center">
       <input type="number" class="form-control" [(ngModel)]="scores[i]">
     </div>
-    <div class="col-3">
+    <div class="col-5">
       <h6>{{handicaps[i]}}</h6>
     </div>
+
   </div>
   <div class="row mt-2">
     <div class="col-12">
@@ -32,6 +38,12 @@
   <div class="row mt-2 mb-2">
     <div class="col-12">
       <button class="btn btn-success" (click)="updateScores()">Update Scores</button>
+    </div>
+  </div>
+
+  <div class="row mt-2 mb-2">
+    <div class="col-12">
+      <button class="btn btn-success" (click)="calc()">Scores</button>
     </div>
   </div>
 </div>

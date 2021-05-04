@@ -95,6 +95,10 @@ export class StateService {
     return this.players;
   }
 
+  public getJoinedPlayers() {
+    return this.joined;
+  }
+
   public getTeams() {
     return this.teams;
     console.log(this.teams)
