@@ -14,6 +14,7 @@ export class StateService {
   private player: Object;
   private joined: Object;
   private teams: Array<any>;
+  public loggedIn = false;
 
   public _session = new BehaviorSubject<any>({});
   public _permissions = new BehaviorSubject<any>({});
@@ -22,7 +23,7 @@ export class StateService {
   constructor() { }
 
   public setUser(user) {
-    console.log(user)
+    this.loggedIn = true;
     this.user = user.userInfo;
     this.tokens = user.tokens;
     this.permissions = user.permissions;

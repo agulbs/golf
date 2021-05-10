@@ -1,1 +1,1 @@
- ng build --prod --base-href http://castlefin.com/ggolf/
+ ng build --prod --base-href http://castlefin.com/tournament/

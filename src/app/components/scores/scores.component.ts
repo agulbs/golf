@@ -72,31 +72,4 @@ export class ScoresComponent implements OnInit {
     return index;
   }
 
-  public calc() {
-    console.log(this.scores)
-  }
-
-  public calculateScores() {
-    let front = this.getScore(0, 9);
-    let back = this.getScore(9, 18);
-
-    console.log(front[0], front[1], front[0] - front[1], front[0] - 32);
-    console.log(back[0], back[1], back[0] - back[1])
-  }
-
-  public getScore(start, end) {
-    let playerSum = 0;
-    let courseSum = 0;
-    for (start; start < end; start++) {
-      if (this.scores[start] == null || this.scores[start] == "") {
-        return false;
-      }
-
-      playerSum += parseInt(this.scores[start]);
-      courseSum += this.handicaps[start];
-    }
-
-    return [playerSum, courseSum];
-  }
-
 }

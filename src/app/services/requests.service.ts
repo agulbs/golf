@@ -10,8 +10,8 @@ import { StateService } from './state.service';
   providedIn: 'root'
 })
 export class RequestsService {
-  private url: String = "http://castlefin.com/golf";
-
+  // private url: String = "http://castlefin.com/golf";
+  private url: String = "http://127.0.0.1:5000";
   constructor(private http: HttpClient, private router: Router, private state: StateService) { }
 
   public login(user) {
@@ -24,8 +24,13 @@ export class RequestsService {
     };
 
     this.postRequest(params).subscribe((res) => {
-      this.state.setUser(res['data']);
-      this.router.navigateByUrl("game");
+      if (!('data' in res)) {
+        alert('There was an error logging in. please check your username & password.')
+      }
+      else {
+        this.state.setUser(res['data']);
+        this.router.navigateByUrl("game");
+      }
     })
 
   }
@@ -81,6 +86,8 @@ export class RequestsService {
         }
       }
     }
+
+    console.log(params)
 
     this.postRequest(params).subscribe((res) => {
       this.joinTeam(team, player.username, game, handicap, bet)
