@@ -10,8 +10,8 @@ import { StateService } from './state.service';
   providedIn: 'root'
 })
 export class RequestsService {
-  // private url: String = "http://castlefin.com/golf";
-  private url: String = "http://127.0.0.1:5000";
+  private url: String = "http://castlefin.com/golf";
+  // private url: String = "http://127.0.0.1:5000";
   constructor(private http: HttpClient, private router: Router, private state: StateService) { }
 
   public login(user) {
@@ -73,6 +73,25 @@ export class RequestsService {
     this.deleteRequest(params).subscribe((res) => {
       this.getGameSettings();
     });
+  }
+
+  public closeGame(session) {
+    let params = {
+      url: "/game/close",
+      data: {
+        closeGame: { session: session },
+        // verifyRole: {
+        //   // user: "chief"
+        //   user: this.state.getUsername()
+        // }
+      }
+    }
+
+    this.postRequest(params).subscribe((res) => {
+      this.getGameSettings();
+    }, (err) => { console.log(err) })
+
+    console.log(session)
   }
 
   public joinGame(game, player, handicap, bet, team) {
@@ -204,6 +223,7 @@ export class RequestsService {
 
     this.postRequest(params).subscribe((res) => {
       this.getGameSettings();
+      this.router.navigateByUrl("game");
     });
   }
 

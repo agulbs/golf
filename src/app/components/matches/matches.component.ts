@@ -73,6 +73,10 @@ export class MatchesComponent implements OnInit {
     this.requests.deleteGame(this.session, this.date);
   }
 
+  public closeGame() {
+    this.requests.closeGame(this.session);
+  }
+
   public calculateScores() {
     if (this.joinedPlayers.length == 0) {
       return false;
@@ -95,12 +99,115 @@ export class MatchesComponent implements OnInit {
       });
 
       let compared = {};
+
+      var payouts = {
+        headers: ["Players"],
+        data: []
+      };
+
+      this.joinedPlayers.forEach(playerOne => {
+        payouts.headers.push(playerOne.username);
+        var pdata = [playerOne.username];
+
+        this.joinedPlayers.forEach(playerTwo => {
+          if (playerOne.username == playerTwo.username) {
+            pdata.push("N/A");
+          } else if (playerOne.team == playerTwo.team) {
+            pdata.push(playerOne.team);
+          } else {
+            var p1bet = playerOne.frontSideBet;
+            var p2bet = playerTwo.frontSideBet;
+            var bet = p1bet;
+
+            if (p1bet > p2bet) {
+              bet = p2bet;
+            }
+
+            if (p1bet < p2bet) {
+              bet = p1bet;
+            }
+
+            let hcps = Math.abs(playerOne.handicap - playerTwo.handicap);
+            let hcpHoles = []
+            for (let i = 1; i <= hcps; i++) {
+              hcpHoles.push(courseOrder[i])
+            }
+
+            var rawScores = [playerOne.scores.split(','), playerTwo.scores.split(',')];
+            var scores = [playerOne.scores.split(','), playerTwo.scores.split(',')];
+
+            if (playerOne.handicap > playerTwo.handicap) {
+              hcpHoles.forEach(h => {
+                var o = parseInt(scores[0][h - 1]);
+                scores[0][h - 1] = o - 1;
+              })
+            } else {
+              hcpHoles.forEach(h => {
+                var o = parseInt(scores[1][h - 1]);
+                scores[1][h - 1] = o - 1;
+              })
+            }
+
+            var p1front = 0;
+            var p2front = 0;
+            var p1back = 0;
+            var p2back = 0;
+
+            for (var i = 0; i < 9; i++) {
+              if (parseInt(scores[0][i]) < parseInt(scores[1][i])) {
+                p1front += 1;
+              }
+
+              if (parseInt(scores[0][i]) > parseInt(scores[1][i])) {
+                p2front += 1;
+              }
+
+              if (parseInt(scores[0][i + 9]) < parseInt(scores[1][i + 9])) {
+                p1back += 1;
+              }
+
+              if (parseInt(scores[0][i + 9]) > parseInt(scores[1][i + 9])) {
+                p2back += 1;
+              }
+            }
+
+            var p = 0;
+
+            if (p1front > p2front) {
+              p += bet;
+            } else if (p1front < p2front) {
+              p -= bet;
+            }
+
+            if (p1back > p2back) {
+              p += bet;
+            } else if (p1back < p2back) {
+              p -= bet;
+            }
+
+            if ((p1front + p1back) > (p2front + p2back)) {
+              p += bet + bet;
+            } else if ((p1front + p1back) < (p2front + p2back)) {
+              p -= bet + bet;
+            }
+
+            p *= -1;
+
+            pdata.push(`$${p}`)
+
+          }
+        })
+        payouts.data.push(pdata)
+      });
+
+      console.log(payouts)
+
       this.joinedPlayers.forEach(playerOne => {
 
         this.joinedPlayers.forEach(playerTwo => {
           let cmp = playerOne.username + "." + playerTwo.username;
           let cmp2 = playerTwo.username + "." + playerOne.username;
-          if (!(cmp in compared) && !(cmp2 in compared) && (playerTwo.username != playerOne.username)) {
+          if (!(cmp in compared) && !(cmp2 in compared) && (playerTwo.username != playerOne.username) && (playerTwo.team != playerOne.team)) {
             compared[cmp] = 0;
             compared[cmp2] = 0;
 
@@ -163,16 +270,30 @@ export class MatchesComponent implements OnInit {
               raw: [rawScores[0], rawScores[1]],
               hcp: [playerOne.handicap, playerTwo.handicap]
             }
-
             matchSummary.push(summary)
+
           }
 
         });
       })
 
-      var csvExport = [];
+
+
+      var totals = ["Totals"]
+      var cols = [
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+        'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X'
+      ];
+
+      for (var i = 1; i <= payouts.data.length; i++) {
+        totals.push(`=DOLLAR(SUM(${cols[i]}2:${cols[i]}${payouts.data.length + 1}))`)
+      }
+      var csvExport = [
+        [payouts.headers, ...payouts.data], [totals]
+      ];
+
       matchSummary.forEach(s => {
-        var header = ["Holes", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, "Handicap"]
+        var header = ["Hole", "Handicap", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
         var expt: any = [
           header,
         ];
@@ -180,9 +301,7 @@ export class MatchesComponent implements OnInit {
         let users = Object.keys(s.front);
         for (var i = 0; i < users.length; i++) {
           var score = s.scores.all[i].map(Number);
-          let arr = [[users[i], ...score]];
-          arr.push(s.scores.hcp[i]);
-          expt.push(arr);
+          expt.push([[users[i], s.scores.hcp[i], ...score]]);
         }
 
         expt.push([""]);
@@ -193,6 +312,8 @@ export class MatchesComponent implements OnInit {
         csvExport.push(expt);
       });
 
+
+
       let csvContent = "data:text/csv;charset=utf-8,";
       csvExport.forEach(cexp => {
         cexp.forEach(c => {
@@ -200,16 +321,20 @@ export class MatchesComponent implements OnInit {
           csvContent += row + "\r\n";
         });
 
-        csvContent += "\r\n"
+        csvContent += "\r\n";
       });
+
+
 
       var encodedUri = encodeURI(csvContent);
       var link = document.createElement("a");
       link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "my_data.csv");
+      link.setAttribute("download", "scorecards.csv");
       document.body.appendChild(link);
 
       link.click();
+
+      // console.log(matchSummary)
     } catch (error) {
       alert(error)
     }
