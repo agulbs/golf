@@ -83,6 +83,7 @@ export class MatchesComponent implements OnInit {
     }
     try {
       // console.log(this.joinedPlayers)
+      var err = {};
       let course = {};
       let courseOrder = {};
       let matchSummary = [];
@@ -104,6 +105,32 @@ export class MatchesComponent implements OnInit {
         headers: ["Players"],
         data: []
       };
+
+      this.joinedPlayers.forEach(player => {
+        player.scores.split(',').forEach((score, i) => {
+          if (score.length < 1) {
+            if (player.username in err) {
+              err[player.username].push("Hole " + (i + 1));
+            } else {
+              err[player.username] = ["Hole " + (i + 1)];
+
+            }
+
+          }
+        })
+      })
+
+      console.log(err)
+      var errMsg = "";
+      var errKeys = Object.keys(err);
+      if (errKeys.length > 0) {
+        errKeys.forEach(e => {
+          errMsg += `${e} is missing scores for: ${err[e].join(', ')}.\n`
+        });
+        alert(errMsg)
+
+        return false;
+      }
 
       this.joinedPlayers.forEach(playerOne => {
         payouts.headers.push(playerOne.username);
