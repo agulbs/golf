@@ -42,6 +42,28 @@
               <div class="col-12">
                 <h6>Number of teams: {{teams}}</h6>
               </div>
+              <div class="col-12 mt-2" *ngFor="let team of captainTeam">
+                <div class="row">
+                  <div class="col-5 d-flex justify-content-end">
+                    Team Name:
+                  </div>
+                  <div class="col-7 d-flex justify-content-start">
+                    <div class="input-group mb-3">
+                      <input type="text" class="form-control" name="name" [(ngModel)]="team.name">
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-5 d-flex justify-content-end">
+                    Captain:
+                  </div>
+                  <div class="col-7 d-flex justify-content-start">
+                    <div class="input-group mb-3">
+                      <input type="text" class="form-control" name="captain" [(ngModel)]="team.captain">
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="col-12 mt-3 mb-3">
                 <button class="btn btn-success" style="width:75%" (click)="calculateScores()">Calculate Scores</button>
               </div>

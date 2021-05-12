@@ -14,21 +14,29 @@ export class MatchesComponent implements OnInit {
   public date: String;
   public course: Number;
   public teams: Number;
+  public captainTeam = [];
   public createGameErr = false;
+  public players;
   public joinedPlayers;
 
   constructor(private requests: RequestsService, private state: StateService) {
     this.state._session.subscribe(session => {
+      console.log(session)
       if ('error' in session) {
         this.sessionFlag = false;
         this.courses = this.state.getCourses();
       } else {
         this.courses = this.state.getCourses();
+        this.players = this.state.getPlayers();
+        console.log(this.players)
         this.sessionFlag = true;
         this.session = session.session;
         this.date = session.date;
         this.course = session.course;
         this.teams = session.teams;
+        for (var i = 0; i < this.teams; i++) {
+          this.captainTeam.push({ captain: '', name: '' })
+        }
         this.joinedPlayers = this.state.getJoinedPlayers();
       }
     });

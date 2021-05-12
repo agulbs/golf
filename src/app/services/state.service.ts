@@ -15,6 +15,7 @@ export class StateService {
   private joined: Object;
   private teams: Array<any>;
   public loggedIn = false;
+  public captains;
 
   public _session = new BehaviorSubject<any>({});
   public _permissions = new BehaviorSubject<any>({});
@@ -94,6 +95,10 @@ export class StateService {
 
   public getPlayers() {
     return this.players;
+  }
+
+  public getCaptains() {
+    return this.captains;
   }
 
   public getJoinedPlayers() {
