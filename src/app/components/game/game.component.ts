@@ -8,113 +8,64 @@ import { StateService } from '../../services/state.service';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  public joinGameFlag;
-  public joinTeamFlag;
-  public scorecardFlag;
-  public game: Object;
-  public teams: Array<any>;
-  public player: Object;
-  public team: String;
-  public handicap: Number;
-  public frontbet: Number;
-  public backbet: Number;
-  public errMsg: String;
-  public setups;
-
+  public settings;
+  public nogame;
+  public course;
+  public player = {
+    // frontSideBet: '',
+    // backSideBet: '',
+    // handicap: ''
+  };
+  public handicap;
+  public frontSideBet;
+  public playerReady;
+  public err = "";
 
   constructor(private requests: RequestsService, private state: StateService) {
-    // this.state._session.subscribe(session => {
-    //   if ('error' in session) {
-    //     this.joinGameFlag = false;
-    //   } else {
-    //     this.joinGameFlag = true;
-    //     this.game = session;
-    //     this.player = this.state.getPlayer();
-    //     console.log(this.player)
-    //   }
-    // });
+    this.state.gameSettings.subscribe(settings => {
+      console.log(settings)
+      this.settings = settings;
 
-    this.state._session.subscribe(session => {
-      setTimeout(() => {
-        if ('error' in session) {
-          this.joinGameFlag = false;
-          this.joinTeamFlag = false;
-        } else {
-          this.joinGameFlag = true;
-          this.joinTeamFlag = true;
-          this.player = this.state.getPlayer();
-          this.game = session;
-
-          if (this.player['frontSideBet'] == null) {
-            this.setups = false;
+      if ('gameSettings' in settings) {
+        if ('session' in settings['gameSettings']) {
+          if ('error' in settings['gameSettings']['session']) {
+            this.nogame = true;
           } else {
-            this.setups = true;
+            this.nogame = false;
+            this.course = settings.gameSettings['session']['course'];
+
+            var username = this.state.user['userInfo']['username'];
+            settings.gameSettings.joinedPlayers.players.forEach(player => {
+              if (player['username'] == username) {
+                this.player = player;
+              }
+            });
+
+            this.state.player = this.player;
+
+            if (this.player['frontSideBet'] == null || this.player['backSideBet'] == null || this.player['handicap'] == null) {
+              this.playerReady = false;
+            } else {
+              this.playerReady = true;
+            }
           }
-
-
-          console.log(this.state.getPlayer())
-
-          // if (this.teams.length == 0) {
-          //   this.joinTeamFlag = false;
-          // } else {
-          //   this.joinTeamFlag = true;
-          //   this.game = session;
-          //   this.player = this.state.getPlayer();
-          //   if ('joined' in this.player) {
-          //     this.scorecardFlag = true;
-          //   }
-          // }
         }
-      }, 1);
-    });
+      }
+    })
   }
 
-  ngOnInit(): void {
-    this.requests.getGameSettings();
-  }
+  ngOnInit(): void { }
 
-  public joinGame() {
-    if (typeof (this.handicap) === "undefined") {
-      this.errMsg = "Please enter a handicap.";
+  public submitBets() {
+    if (typeof (this.handicap) === "undefined" || this.handicap == null || typeof (this.frontSideBet) === "undefined" || this.frontSideBet == null) {
+      this.err = "Please make sure you have filled out all required fields.";
       return false;
     }
 
-    if (typeof (this.frontbet) === "undefined") {
-      this.errMsg = "Please enter a front side bet.";
-      return false;
-    }
+    this.err = "";
 
-    if (typeof (this.team) === "undefined") {
-      this.errMsg = "Please select a team.";
-      return false;
-    }
-
-    this.errMsg = "";
-
-    console.log(this.team)
-    this.requests.joinGame(this.game, this.player, this.handicap, this.frontbet, this.team);
+    this.requests.updateBets(this.handicap, this.frontSideBet, this.settings.gameSettings['session']['session']);
   }
 
-  public saveBetsHcp() {
-    if (typeof (this.handicap) === "undefined") {
-      this.errMsg = "Please enter a handicap.";
-      return false;
-    }
-
-    if (typeof (this.frontbet) === "undefined") {
-      this.errMsg = "Please enter a front side bet.";
-      return false;
-    }
-
-    console.log(this.player)
-
-    this.errMsg = "";
-    this.requests.updateBets(this.game, this.player, this.handicap, this.frontbet, this.team)
-
-  }
-
-  public leaveGame() {
-    this.requests.leaveGame(this.game, this.player);
-  }
 
 }

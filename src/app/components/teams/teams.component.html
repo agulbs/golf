@@ -1,48 +1,61 @@
 <app-navbar></app-navbar>
-<div class="container-fluid">
+<div class="col-12">
   <div class="row mt-3">
-    <div class="col-12">
-      <div class="card text-center">
-        <div class="card-header">
-          <h5>{{team.name}}</h5>
-        </div>
-        <div class="card-body">
-          <div class="row" *ngFor="let player of players">
-            <div class="col-12 mt-3">
-              <button class="btn btn-primary mt-3" style="width:200px;" data-toggle="modal" data-target="#playerScoreModal" (click)="getPlayerData(player)">{{player.username}}</button>
+    <div class="col-12" *ngIf="noteams;else teams">
+      <h6>No teams available. Waiting for the round to start.</h6>
+    </div>
+    <ng-template #teams>
+      <div class="col-12">
+        <div class="card text-center">
+          <div class="card-header">
+            <h6>{{captain.team}}</h6>
+          </div>
+          <div class="card-body">
+            <div class="row mt-2 mb-2" *ngFor="let teammate of teammates">
+              <div class="col-5">{{teammate.username}}</div>
+              <div class="col-7"><button class="btn btn-info" data-toggle="modal" data-target="#playerModal" (click)="viewPlayerScorecard(teammate)">View Scorecard</button></div>
+              <div class="col-12">
+                <hr>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </ng-template>
   </div>
-
 </div>
 
-
-<!-- Modal -->
-<div class="modal fade" id="playerScoreModal" tabindex="-1" role="dialog" aria-labelledby="playerScoreModalLabel" aria-hidden="true">
+<div class="modal fade" id="playerModal" tabindex="-1" role="dialog" aria-labelledby="playerModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="playerScoreModalLabel">{{player.username}}</h5>
+        <h5 class="modal-title" id="playerModalLabel">{{player.username}} - Scorecard</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div class="row" *ngFor="let score of player.scores;let i = index;">
-          <div class="col-6 d-flex justify-content-end">
-            <h6>Hole {{i + 1}}</h6>
+        <div class="row">
+          <div class="col-6 d-flex justify-content-end">Hole</div>
+          <div class="col-6 d-flex justify-content-start">Score</div>
+        </div>
+        <div class="row" *ngFor="let score of player.scores;let i = index">
+          <div class="col-6 d-flex justify-content-end">Hole {{i+1}}</div>
+          <div class="col-6 d-flex justify-content-start">{{score}}</div>
+          <div class="col-12">
+            <hr>
           </div>
-          <div class="col-6 d-flex justify-content-start">
-            <h6>{{score}}</h6>
-          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-4">HCP: {{player.handicap}}</div>
+          <div class="col-8 d-flex justify-content-end">Front Side Bet: {{player.frontSideBet | currency:'USD'}}</div>
+          <div class="col-12 d-flex justify-content-end">Back Side Bet: {{player.frontSideBet | currency:'USD'}}</div>
+          <div class="col-12 d-flex justify-content-end">Total: {{player.frontSideBet + player.frontSideBet | currency:'USD'}}</div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
       </div>
     </div>
   </div>

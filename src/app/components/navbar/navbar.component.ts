@@ -14,9 +14,7 @@ export class NavbarComponent implements OnInit {
   }
 
   constructor(private state: StateService) {
-    this.state._permissions.subscribe(permissions => {
-      this.permissions = permissions
-    });
+    this.permissions = this.state.user['permissions']
   }
 
   ngOnInit(): void {

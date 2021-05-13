@@ -8,87 +8,56 @@ import { StateService } from '../../services/state.service';
   styleUrls: ['./teams.component.css']
 })
 export class TeamsComponent implements OnInit {
-  public name: String;
-  public nameErr = false;
-  public teams;
+  public settings;
+  public noteams;
   public team;
-  private session: Object;
-  private username;
-  public noGamesFlag = false;
-  public createdTeam = false;
-  public players = [];
+  public captain;
+  public teammates = [];
   public player = {
-    backSideBet: '',
-    captain: '',
-    frontSideBet: '',
-    handicap: '',
-    scores: '',
-    team: '',
     username: '',
+    scores: '',
+    handicap: '',
+    backSideBet: '',
+    frontSideBet: '',
   };
 
   constructor(private requests: RequestsService, private state: StateService) {
-    setTimeout(() => {
-      this.state._session.subscribe(session => {
-        if ('error' in session) {
-          this.noGamesFlag = true;
-        } else {
-          this.session = session;
-          this.noGamesFlag = false;
-          this.teams = this.state.getTeams();
-          this.username = this.state.getUsername();
+    this.state.gameSettings.subscribe(settings => {
+      this.settings = settings;
 
-          if (this.teams.length == 0) {
-            this.createdTeam = false;
-          } else {
+      if ('error' in settings.gameSettings.session) {
+        this.noteams = true;
+      } else {
+        this.noteams = false;
+      }
 
-            this.teams.forEach(team => {
-              if (team.captain == this.username) {
-                this.createdTeam = true;
-                this.team = team;
-              }
-            });
+      var username = this.state.user['userInfo']['username'];
 
-            var players = this.state.getJoinedPlayers();
-            Object.keys(players).forEach(p => {
-              if (players[p]['team'] == this.team['name']) {
-                this.players.push(players[p])
-              }
-            })
-
-            console.log(this.players)
-
-            this.createdTeam = true;
-
-
+      settings.gameSettings.joinedPlayers.players.forEach(player => {
+        if (player['captain'] == username) {
+          if (player['scores'] != null) {
+            player['scores'] = player['scores'].split(',');
           }
+          this.teammates.push(player);
+        }
+
+        if (player['username'] == username) {
+          this.captain = player;
         }
       });
-    }, 500);
+
+      console.log(this.teammates)
+    })
   }
 
   ngOnInit(): void {
-    this.requests.getGameSettings()
+
   }
 
-  public createTeam() {
-    if (typeof (this.name) === "undefined") {
-      this.nameErr = true;
-      return false;
-    }
-
-    this.nameErr = false;
-
-    this.requests.createTeam(this.name, this.session);
-  }
-
-  public deleteTeam() {
-    this.requests.deleteTeam(this.team);
-  }
-
-  public getPlayerData(player) {
-    player['scores'] = player['scores'].split(',')
+  public viewPlayerScorecard(player) {
     this.player = player;
   }
+
+
 
 }

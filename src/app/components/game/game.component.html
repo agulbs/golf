@@ -1,84 +1,64 @@
 <app-navbar></app-navbar>
-<div class="container-fluid">
-  <div class="row mt-3 mb-3" *ngIf="joinGameFlag && joinTeamFlag;else join_game">
-    <div class="col-12">
-      <div class="card text-center">
-        <div class="card-header">
-          <h5>Todays Game</h5>
-        </div>
-        <div class="card-body">
-          <div class="row text-start">
-            <div class="col-12 d-flex justify-content-center">
-              <h6>Course:</h6>&nbsp;&nbsp;{{game.course}}
+<div class="col-12">
+  <div class="row mt-3">
+    <div class="col-12" *ngIf="nogame;else game">
+      <h6>No games availble. Please wait for a game to be started.</h6>
+    </div>
+    <ng-template #game>
+      <div class="col-12">
+        <div class="card text-center">
+          <div class="card-header">
+            <h6>Todays Game</h6>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12 d-flex justify-content-center"><strong>Course</strong>: {{course}}</div>
+              <div class="col-12 d-flex justify-content-center"><strong>Team</strong>: {{player.team}}</div>
             </div>
-            <div class="col-12 d-flex justify-content-center">
-              <h6>Team:</h6>&nbsp;&nbsp;{{player.team}}
-            </div>
-            <!-- <div class="col-12 text-start">
-              <h6>Number of Teams: {{game.teams}}</h6>
-            </div> -->
-
-            <div class="col-12 d-flex justify-content-center mt-2" *ngIf="!setups">
-              <input type="number" class="form-control" name="handicap" placeholder="Handicap" style="width:50%" [(ngModel)]="handicap">
-            </div>
-            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!setups">
-              <input type="number" class="form-control" name="frontbet" placeholder="Frontside Bet" style="width:50%" [(ngModel)]="frontbet">
-            </div>
-            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!setups">
-              <input type="number" class="form-control" name="backbet" placeholder="Backside Bet" style="width:50%" [(ngModel)]="frontbet">
-            </div>
-
-            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!setups">
-              <button class="btn btn-primary" (click)="saveBetsHcp()">Save Bets & Handicap</button>
-            </div>
-
-
-            <!-- <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!player.joined">
-              <select class="form-control" name="team" [(ngModel)]="team" style="width:50%">
-                <option [value]="team.name" *ngFor="let team of teams">{{team.name}}</option>
-              </select>
-            </div> -->
-
-            <div class="col-12 d-flex justify-content-center mt-1" *ngIf="setups">
-              <h6>Player HCP:</h6>&nbsp;&nbsp;{{player.handicap}}
-            </div>
-            <div class="col-12 d-flex justify-content-center mt-2" *ngIf="setups">
-              <h6>Frontside Bet:</h6>&nbsp;&nbsp;{{player.frontSideBet}}
-            </div>
-            <div class=" col-12 d-flex justify-content-center mt-1" *ngIf="setups">
-              <h6>Backside Bet:</h6>&nbsp;&nbsp;{{player.frontSideBet}}
-            </div>
-            <div class=" col-12 d-flex justify-content-center mt-1" *ngIf="setups">
-              <h6>Total:</h6>&nbsp;&nbsp;{{player.frontSideBet + player.frontSideBet}}
-            </div>
-
-            <div class="col-12 mt-2" *ngIf="setups">
-              <app-scores></app-scores>
-            </div>
-
-            <!-- <div class="col-12 mt-3" *ngIf="!player.joined;else leave">
-              <button class="btn btn-primary" style="width:70%" (click)="joinGame()">Join Game</button>
-            </div> -->
-            <div class="col-12 mt-3 d-flex justify-content-center">
-
-              <h6>{{errMsg}}</h6>
-            </div>
-            <!-- <ng-template #leave>
-              <div class="col-12 mt-3">
-                <button class="btn btn-danger" style="width:70%" (click)="leaveGame()">Leave Game</button>
+            <div class="row" *ngIf="!playerReady; else ready">
+              <div class="col-12 mt-2 d-flex justify-content-center">
+                <input type="number" class="form-control" placeholder="Handicap" style="width:150px;" [(ngModel)]="handicap" name="handicap">
               </div>
-            </ng-template> -->
+              <div class="col-12 mt-2 d-flex justify-content-center">
+                <input type="number" class="form-control" placeholder="Frontside Bet" style="width:150px;" [(ngModel)]="frontSideBet" name="frontSideBet">
+              </div>
+              <div class="col-12 mt-2 d-flex justify-content-center">
+                <input type="number" class="form-control" placeholder="Backside Bet" style="width:150px;" [(ngModel)]="frontSideBet" name="frontSideBet">
+              </div>
+              <div class="col-12 mt-2 d-flex justify-content-center">
+                <h6>Total Bet: {{frontSideBet + frontSideBet|currency:'USD'}}</h6>
+              </div>
+              <div class="col-12 mt-2 d-flex justify-content-center">
+                <button class="btn btn-primary" style="width:150px;" (click)="submitBets()">Submit</button>
+              </div>
+              <div class="col-12 mt-3 d-flex justify-content-center">
+                <h6>{{err}}</h6>
+              </div>
+            </div>
+            <ng-template #ready>
+              <div class="row">
+                <div class="col-12 mt-2 d-flex justify-content-center">
+                  <strong>Handicap</strong>:{{player.handicap}}
+                </div>
+                <div class="col-12 mt-2 d-flex justify-content-center">
+                  <strong>Frontside Bet</strong>:{{player.frontSideBet|currency:'USD'}}
+                </div>
+                <div class="col-12 mt-2 d-flex justify-content-center">
+                  <strong>Backside Bet</strong>:{{player.frontSideBet|currency:'USD'}}
+                </div>
+                <div class="col-12 mt-2 d-flex justify-content-center">
+                  <strong>Total Bet</strong>:{{player.frontSideBet|currency:'USD'}}
+                </div>
+                <div class="col-12 mt-2 d-flex justify-content-center">
+                  <button class="btn btn-primary" style="width:150px;" (click)="submitBets()">Submit</button>
+                </div>
+              </div>
+              <app-scores></app-scores>
+            </ng-template>
+
           </div>
         </div>
       </div>
-    </div>
+    </ng-template>
   </div>
-  <ng-template #join_game>
-    <div class="row mt-5">
-      <div class="col-12">
-        <h6>Please wait for a game to be created & a team to be availble.</h6>
-      </div>
-    </div>
-
-  </ng-template>
 </div>

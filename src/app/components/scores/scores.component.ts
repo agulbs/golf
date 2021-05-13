@@ -8,6 +8,7 @@ import { StateService } from '../../services/state.service';
   styleUrls: ['./scores.component.css']
 })
 export class ScoresComponent implements OnInit {
+
   public scores = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
   public errMsg;
   public player;
@@ -15,35 +16,30 @@ export class ScoresComponent implements OnInit {
   public handicaps = [];
 
   constructor(private requests: RequestsService, private state: StateService) {
-    this.state._session.subscribe(session => {
-      setTimeout(() => {
-        if ('error' in session) {
-        } else {
-          this.player = this.state.getPlayer();
-          this.player['session'] = session.session;
-          let courses = this.state.getCourses();
-
-          Object.keys(courses).forEach(k => {
-            if (session.course == courses[k].name) {
-              this.course = courses[k];
-            }
-          })
-
-          Object.keys(this.course).forEach(hcp => {
-            // console.log(hcp.substring(0, 4))
-            if (hcp.substring(0, 4) == "hole") {
-              this.handicaps.push(this.course[hcp])
-            }
-          });
-
-          console.log(this.handicaps)
-          if (this.player['scores']) {
-            this.scores = this.player['scores'].split(',');
-          }
-
+    this.state.gameSettings.subscribe(session => {
+      this.player = this.state.player;
+      this.player['session'] = session.gameSettings['session']['session'];
+      let courses = session.courses['all'];
+      Object.keys(courses).forEach(k => {
+        if (session.gameSettings['session']['course'] == courses[k].name) {
+          this.course = courses[k];
         }
-      }, 1);
-    });
+      });
+
+      Object.keys(this.course).forEach(hcp => {
+        // console.log(hcp.substring(0, 4))
+        if (hcp.substring(0, 4) == "hole") {
+          this.handicaps.push(this.course[hcp])
+        }
+      });
+
+      if (this.player['scores']) {
+        this.scores = this.player['scores'].split(',');
+      }
+
+      console.log(this.player);
+    })
+
   }
 
   ngOnInit(): void {
@@ -71,5 +67,6 @@ export class ScoresComponent implements OnInit {
   public trackByIndex(index: number, obj: any): any {
     return index;
   }
+
 
 }

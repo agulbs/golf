@@ -1,72 +1,47 @@
 <app-navbar></app-navbar>
-<div class="container-fluid">
-  <div class="row mt-3" *ngIf="!sessionFlag;else game_data">
-    <div class="col-12">
+<div class="col-12">
+  <div class="row mt-3">
+    <div class="col-12" *ngIf="nogame;else game">
       <div class="card text-center">
         <div class="card-header">
-          <h5>Start New Game</h5>
+          <h6>Start New Game</h6>
         </div>
         <div class="card-body">
           <div class="row">
             <div class="col-12">
               <button class="btn btn-primary" (click)="startRound(1)">Start Round 1</button>
             </div>
-            <div class="col-12 mt-3 mb-3">
+            <div class="col-12 mt-5 mb-3">
               <button class="btn btn-primary" (click)="startRound(2)">Start Round 2</button>
-            </div>
-            <div class="col-12 mt-4" *ngIf="createGameErr">
-              <h6>Please make sure you've selected a course & entered the number of teams.</h6>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <ng-template #game_data>
-    <div class="row mt-2" *ngIf="sessionFlag">
+    <ng-template #game>
       <div class="col-12">
         <div class="card text-center">
           <div class="card-header">
-            <h5>Todays Game</h5>
+            <h6>Todays Game</h6>
           </div>
           <div class="card-body">
             <div class="row">
               <div class="col-12">
-                <h6>Course: {{course}}</h6>
+                <h6>Course: {{settings.gameSettings.session.course}}</h6>
               </div>
               <div class="col-12">
-                <h6>Number of teams: {{teams}}</h6>
+                <h6>Number of Teams: {{settings.gameSettings.session.teams}}</h6>
               </div>
-              <div class="col-12 mt-3 mb-3">
-                <button class="btn btn-success" style="width:75%" (click)="calculateScores()">Calculate Scores</button>
+              <div class="col-12">
+                <button class="btn btn-success mt-3" style="width:150px;" (click)="calculateScores()">Calculate Scores</button>
               </div>
-              <div class="col-12 mt-3 mb-3">
-                <button class="btn btn-primary" style="width:75%" (click)="closeGame()">End Game</button>
+              <div class=" col-12">
+                <button class="btn btn-danger mt-4" (click)="endRound()" style="width:150px;">End Round</button>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="col-12 mt-5">
-
-        <div class="card text-center">
-          <div class="card-header">
-            <h5>Delete Todays Game</h5>
-          </div>
-          <div class="card-body">
-            <div class="row">
-
-              <div class="col-12 mt-3 mb-3">
-                <button class="btn btn-danger" style="width:75%" (click)="deleteGame()">Delete Game</button> </div>
-            </div>
-          </div>
-        </div>
-
-
-
-      </div>
-
-    </div>
-  </ng-template>
+    </ng-template>
+  </div>
 </div>
