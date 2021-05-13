@@ -38,6 +38,16 @@ export class MatchesComponent implements OnInit {
 
   }
 
+  public startRound(round) {
+    let date = new Date();
+    date.setHours(date.getHours() - 4);
+    var d = date.toISOString().slice(0, 10);
+
+    var session = `round.${round}.${d}`;
+
+    this.requests.startRound(round);
+  }
+
   public generateSessionNumber() {
     let result: String = '';
     let characters: String = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

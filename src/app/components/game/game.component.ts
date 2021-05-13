@@ -19,6 +19,7 @@ export class GameComponent implements OnInit {
   public frontbet: Number;
   public backbet: Number;
   public errMsg: String;
+  public setups;
 
 
   constructor(private requests: RequestsService, private state: StateService) {
@@ -40,18 +41,29 @@ export class GameComponent implements OnInit {
           this.joinTeamFlag = false;
         } else {
           this.joinGameFlag = true;
+          this.joinTeamFlag = true;
+          this.player = this.state.getPlayer();
+          this.game = session;
 
-          this.teams = this.state.getTeams();
-          if (this.teams.length == 0) {
-            this.joinTeamFlag = false;
+          if (this.player['frontSideBet'] == null) {
+            this.setups = false;
           } else {
-            this.joinTeamFlag = true;
-            this.game = session;
-            this.player = this.state.getPlayer();
-            if ('joined' in this.player) {
-              this.scorecardFlag = true;
-            }
+            this.setups = true;
           }
+
+
+          console.log(this.state.getPlayer())
+
+          // if (this.teams.length == 0) {
+          //   this.joinTeamFlag = false;
+          // } else {
+          //   this.joinTeamFlag = true;
+          //   this.game = session;
+          //   this.player = this.state.getPlayer();
+          //   if ('joined' in this.player) {
+          //     this.scorecardFlag = true;
+          //   }
+          // }
         }
       }, 1);
     });
@@ -81,6 +93,24 @@ export class GameComponent implements OnInit {
 
     console.log(this.team)
     this.requests.joinGame(this.game, this.player, this.handicap, this.frontbet, this.team);
+  }
+
+  public saveBetsHcp() {
+    if (typeof (this.handicap) === "undefined") {
+      this.errMsg = "Please enter a handicap.";
+      return false;
+    }
+
+    if (typeof (this.frontbet) === "undefined") {
+      this.errMsg = "Please enter a front side bet.";
+      return false;
+    }
+
+    console.log(this.player)
+
+    this.errMsg = "";
+    this.requests.updateBets(this.game, this.player, this.handicap, this.frontbet, this.team)
+
   }
 
   public leaveGame() {

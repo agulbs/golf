@@ -11,57 +11,63 @@
             <div class="col-12 d-flex justify-content-center">
               <h6>Course:</h6>&nbsp;&nbsp;{{game.course}}
             </div>
+            <div class="col-12 d-flex justify-content-center">
+              <h6>Team:</h6>&nbsp;&nbsp;{{player.team}}
+            </div>
             <!-- <div class="col-12 text-start">
               <h6>Number of Teams: {{game.teams}}</h6>
             </div> -->
 
-            <div class="col-12 d-flex justify-content-center mt-2" *ngIf="!player.joined">
+            <div class="col-12 d-flex justify-content-center mt-2" *ngIf="!setups">
               <input type="number" class="form-control" name="handicap" placeholder="Handicap" style="width:50%" [(ngModel)]="handicap">
             </div>
-            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!player.joined">
+            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!setups">
               <input type="number" class="form-control" name="frontbet" placeholder="Frontside Bet" style="width:50%" [(ngModel)]="frontbet">
             </div>
-            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!player.joined">
+            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!setups">
               <input type="number" class="form-control" name="backbet" placeholder="Backside Bet" style="width:50%" [(ngModel)]="frontbet">
             </div>
 
-            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!player.joined">
+            <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!setups">
+              <button class="btn btn-primary" (click)="saveBetsHcp()">Save Bets & Handicap</button>
+            </div>
+
+
+            <!-- <div class=" col-12 d-flex justify-content-center mt-2" *ngIf="!player.joined">
               <select class="form-control" name="team" [(ngModel)]="team" style="width:50%">
                 <option [value]="team.name" *ngFor="let team of teams">{{team.name}}</option>
               </select>
-            </div>
+            </div> -->
 
-            <div class=" col-6 d-flex justify-content-start mt-2" *ngIf="player.joined">
-              <h6>Team:</h6>&nbsp;&nbsp;{{player.team}}
-            </div>
-            <div class=" col-6 d-flex justify-content-end mt-2" *ngIf="player.joined">
-              <h6>Front Side Bet:</h6>&nbsp;&nbsp;{{player.frontSideBet}}
-            </div>
-            <div class="col-6 d-flex justify-content-start mt-1" *ngIf="player.joined">
+            <div class="col-12 d-flex justify-content-center mt-1" *ngIf="setups">
               <h6>Player HCP:</h6>&nbsp;&nbsp;{{player.handicap}}
             </div>
-            <div class=" col-6 d-flex justify-content-end mt-1" *ngIf="player.joined">
+            <div class="col-12 d-flex justify-content-center mt-2" *ngIf="setups">
+              <h6>Frontside Bet:</h6>&nbsp;&nbsp;{{player.frontSideBet}}
+            </div>
+            <div class=" col-12 d-flex justify-content-center mt-1" *ngIf="setups">
               <h6>Backside Bet:</h6>&nbsp;&nbsp;{{player.frontSideBet}}
             </div>
+            <div class=" col-12 d-flex justify-content-center mt-1" *ngIf="setups">
+              <h6>Total:</h6>&nbsp;&nbsp;{{player.frontSideBet + player.frontSideBet}}
+            </div>
 
-
-            <div class="col-12 mt-2" *ngIf="scorecardFlag">
+            <div class="col-12 mt-2" *ngIf="setups">
               <app-scores></app-scores>
             </div>
 
-
-            <div class="col-12 mt-3" *ngIf="!player.joined;else leave">
+            <!-- <div class="col-12 mt-3" *ngIf="!player.joined;else leave">
               <button class="btn btn-primary" style="width:70%" (click)="joinGame()">Join Game</button>
-            </div>
+            </div> -->
             <div class="col-12 mt-3 d-flex justify-content-center">
 
               <h6>{{errMsg}}</h6>
             </div>
-            <ng-template #leave>
+            <!-- <ng-template #leave>
               <div class="col-12 mt-3">
                 <button class="btn btn-danger" style="width:70%" (click)="leaveGame()">Leave Game</button>
               </div>
-            </ng-template>
+            </ng-template> -->
           </div>
         </div>
       </div>

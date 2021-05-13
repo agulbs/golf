@@ -41,6 +41,22 @@ export class RequestsService {
     })
   }
 
+  public startRound(round) {
+    console.log(round);
+
+    let params = {
+      url: "/game/round",
+      data: {
+        startRound: round
+      }
+    };
+
+    this.postRequest(params).subscribe((res) => {
+      this.getGameSettings();
+    }, (err) => { console.log(err) })
+
+  }
+
   public createGame(gameData) {
     let params = {
       url: "/game/setup",
@@ -304,6 +320,29 @@ export class RequestsService {
     });
 
 
+  }
+
+  public updateBets(game, player, handicap, frontbet, team) {
+
+    var params = {
+      url: "/game/bets",
+      data: {
+        "updateBets": {
+          handicap: handicap,
+          frontSideBet: frontbet,
+          backSideBet: frontbet,
+          username: player.username,
+          session: game.session,
+        }
+      }
+    }
+
+    this.postRequest(params).subscribe((res) => {
+      console.log(res)
+      this.getGameSettings();
+    });
+
+    console.log(params);
   }
 
 

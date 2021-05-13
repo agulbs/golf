@@ -16,6 +16,16 @@ export class TeamsComponent implements OnInit {
   private username;
   public noGamesFlag = false;
   public createdTeam = false;
+  public players = [];
+  public player = {
+    backSideBet: '',
+    captain: '',
+    frontSideBet: '',
+    handicap: '',
+    scores: '',
+    team: '',
+    username: '',
+  };
 
   constructor(private requests: RequestsService, private state: StateService) {
     setTimeout(() => {
@@ -37,7 +47,20 @@ export class TeamsComponent implements OnInit {
                 this.createdTeam = true;
                 this.team = team;
               }
+            });
+
+            var players = this.state.getJoinedPlayers();
+            Object.keys(players).forEach(p => {
+              if (players[p]['team'] == this.team['name']) {
+                this.players.push(players[p])
+              }
             })
+
+            console.log(this.players)
+
+            this.createdTeam = true;
+
+
           }
         }
       });
@@ -61,6 +84,11 @@ export class TeamsComponent implements OnInit {
 
   public deleteTeam() {
     this.requests.deleteTeam(this.team);
+  }
+
+  public getPlayerData(player) {
+    player['scores'] = player['scores'].split(',')
+    this.player = player;
   }
 
 }
