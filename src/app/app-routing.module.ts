@@ -14,6 +14,8 @@ const routes: Routes = [
   { path: "matches", component: MatchesComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: "teams", component: TeamsComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: "admin", component: AdminComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: "", component: LoginComponent },
+  { path: '**', redirectTo: "" }
 ];
 
 @NgModule({

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
 import { StateService } from '../../services/state.service';
 @Component({
   selector: 'app-navbar',
@@ -13,8 +15,11 @@ export class NavbarComponent implements OnInit {
     player: 0,
   }
 
-  constructor(private state: StateService) {
-    this.permissions = this.state.user['permissions']
+  constructor(private state: StateService, private router: Router) {
+    if (this.state.user == null) {
+      this.router.navigateByUrl("");
+    }
+    this.permissions = this.state.user['permissions'];
   }
 
   ngOnInit(): void {

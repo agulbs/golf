@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">The Warior</a>
+  <a class="navbar-brand" href="#">The Warrior</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -15,9 +15,9 @@
       <li [routerLinkActive]="['active']" class="nav-item" *ngIf="permissions.admin==1 || permissions.chief==1">
         <a class="nav-link" routerLink="/matches">Matches</a>
       </li>
-      <li [routerLinkActive]="['active']" class="nav-item" *ngIf="permissions.admin==1">
+      <!-- <li [routerLinkActive]="['active']" class="nav-item" *ngIf="permissions.admin==1">
         <a class="nav-link" routerLink="/admin">Admin</a>
-      </li>
+      </li> -->
     </ul>
     <!-- <ul class="navbar-nav mr-auto">
       <li [routerLinkActive]="['active']" class="nav-item">

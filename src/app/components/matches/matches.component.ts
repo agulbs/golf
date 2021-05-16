@@ -70,8 +70,10 @@ export class MatchesComponent implements OnInit {
         data: []
       };
 
+      console.log(this.joinedPlayers)
+
       this.joinedPlayers.forEach(player => {
-        player.scores.split(',').forEach((score, i) => {
+        player['scores'].split(',').forEach((score, i) => {
           if (score.length < 1) {
             if (player.username in err) {
               err[player.username].push("Hole " + (i + 1));

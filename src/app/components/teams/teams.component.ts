@@ -19,7 +19,10 @@ export class TeamsComponent implements OnInit {
     handicap: '',
     backSideBet: '',
     frontSideBet: '',
+    sessin: '',
   };
+
+  public loadedPlayers = {};
 
   constructor(private requests: RequestsService, private state: StateService) {
     this.state.gameSettings.subscribe(settings => {
@@ -34,11 +37,21 @@ export class TeamsComponent implements OnInit {
       var username = this.state.user['userInfo']['username'];
 
       settings.gameSettings.joinedPlayers.players.forEach(player => {
-        if (player['captain'] == username) {
-          if (player['scores'] != null) {
-            player['scores'] = player['scores'].split(',');
+        if (player['username'] in this.loadedPlayers) {
+
+        } else {
+          if (player['captain'] == username) {
+            this.loadedPlayers[player['username']] = 1;
+            if (player['scores'] != null) {
+              if (typeof (player['scores']) == 'string') {
+                player['scores'] = player['scores'].split(',');
+              }
+              else {
+                player['scores'] = player['scores'];
+              }
+            }
+            this.teammates.push(player);
           }
-          this.teammates.push(player);
         }
 
         if (player['username'] == username) {
@@ -54,10 +67,21 @@ export class TeamsComponent implements OnInit {
 
   }
 
+  public trackByIndex(index: number, obj: any): any {
+    return index;
+  }
+
   public viewPlayerScorecard(player) {
     this.player = player;
   }
 
+  public overrideScoresBets(player) {
+    player['session'] = this.settings.gameSettings.session['session'];
+    this.requests.updateBets(player.username, player.handicap, player.frontSideBet, player.session);
 
-
+    this.player['scores'] = player['scores'].join(',');
+    setTimeout(() => {
+      this.requests.updateScores(this.player['scores'], this.player, false);
+    }, 1000);
+  }
 }

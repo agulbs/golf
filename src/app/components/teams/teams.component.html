@@ -36,26 +36,51 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-6 d-flex justify-content-end">Hole</div>
-          <div class="col-6 d-flex justify-content-start">Score</div>
+          <div class="col-6 d-flex justify-content-end">Handicap:</div>
+          <div class="col-6">
+            <input type="number" class="form-control" [(ngModel)]="player.handicap">
+          </div>
+          <div class="col-6 d-flex justify-content-end">
+            Front Side Bet:
+          </div>
+          <div class="col-6">
+            <input type="number" class="form-control" [(ngModel)]="player.frontSideBet">
+          </div>
+          <div class="col-6 d-flex justify-content-end">
+            Back Side Bet:
+          </div>
+          <div class="col-6">
+            <input type="number" class="form-control" [(ngModel)]="player.frontSideBet">
+          </div>
+          <div class="col-12 d-flex justify-content-end mt-2">Overall Bet: {{player.frontSideBet + player.frontSideBet | currency:'USD'}}</div>
         </div>
-        <div class="row" *ngFor="let score of player.scores;let i = index">
-          <div class="col-6 d-flex justify-content-end">Hole {{i+1}}</div>
-          <div class="col-6 d-flex justify-content-start">{{score}}</div>
+        <div class="row">
           <div class="col-12">
             <hr>
           </div>
         </div>
-        <div class="row mt-2">
-          <div class="col-4">HCP: {{player.handicap}}</div>
-          <div class="col-8 d-flex justify-content-end">Front Side Bet: {{player.frontSideBet | currency:'USD'}}</div>
-          <div class="col-12 d-flex justify-content-end">Back Side Bet: {{player.frontSideBet | currency:'USD'}}</div>
-          <div class="col-12 d-flex justify-content-end">Total: {{player.frontSideBet + player.frontSideBet | currency:'USD'}}</div>
+        <div class="row mt-2 mb-2" *ngIf="player.scores">
+          <div class="col-6 d-flex justify-content-end">Hole</div>
+          <div class="col-6 d-flex justify-content-start">Score</div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <hr>
+          </div>
+        </div>
+        <div class="row" *ngFor="let score of player.scores;let i = index;trackBy:trackByIndex;">
+          <div class="col-6 d-flex justify-content-end">Hole {{i+1}}</div>
+          <div class="col-6 d-flex justify-content-start">
+            <input type="text" class="form-control" name="score" style="width:50px;" [(ngModel)]="player.scores[i]">
+          </div>
+          <div class="col-12">
+            <hr>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        <button type="button" class="btn btn-primary" (click)="overrideScoresBets(player)" data-dismiss="modal">Save changes</button>
       </div>
     </div>
   </div>

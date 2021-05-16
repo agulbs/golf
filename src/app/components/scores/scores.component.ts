@@ -33,13 +33,17 @@ export class ScoresComponent implements OnInit {
         }
       });
 
-      if (this.player['scores']) {
-        this.scores = this.player['scores'].split(',');
+      if (this.player['scores'] != null) {
+        if (typeof (this.player['scores']) == 'string') {
+          this.scores = this.player['scores'].split(',');
+        }
+        else {
+          this.scores = this.player['scores'];
+        }
       }
 
       console.log(this.player);
     })
-
   }
 
   ngOnInit(): void {
@@ -61,12 +65,11 @@ export class ScoresComponent implements OnInit {
     this.errMsg = "";
     let score = this.scores.join(',');
 
-    this.requests.updateScores(score, this.player);
+    this.requests.updateScores(score, this.player, true);
   }
 
   public trackByIndex(index: number, obj: any): any {
     return index;
   }
-
 
 }

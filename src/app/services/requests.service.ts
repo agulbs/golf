@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpClientModule, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from "rxjs";
 import { map } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 import { Router } from '@angular/router';
 import { StateService } from './state.service';
@@ -10,9 +11,9 @@ import { StateService } from './state.service';
   providedIn: 'root'
 })
 export class RequestsService {
-  // private url: String = "http://castlefin.com/golf";
-  private url: String = "http://127.0.0.1:5000";
-  constructor(private http: HttpClient, private router: Router, private state: StateService) { }
+  private url: String = "http://castlefin.com/golf";
+  // private url: String = "http://127.0.0.1:5000";
+  constructor(private http: HttpClient, private router: Router, private state: StateService, private toastr: ToastrService) { }
 
   public login(user) {
 
@@ -68,7 +69,7 @@ export class RequestsService {
     }, (err) => { console.log(err) })
   }
 
-  public updateBets(handicap, bet, session) {
+  public updateBets(username, handicap, bet, session) {
     var params = {
       url: "/game/bets",
       data: {
@@ -76,7 +77,7 @@ export class RequestsService {
           handicap: handicap,
           frontSideBet: bet,
           backSideBet: bet,
-          username: this.state.user['userInfo']['username'],
+          username: username,
           session: session
         }
       }
@@ -89,7 +90,7 @@ export class RequestsService {
     })
   }
 
-  public updateScores(scores, player) {
+  public updateScores(scores, player, flag) {
     let params = {
       url: "/game/scores",
       data: {
@@ -103,7 +104,10 @@ export class RequestsService {
 
     this.postRequest(params).subscribe((res) => {
       this.getGameSettings();
-      alert('Your Scores have been updated.')
+      if (flag) {
+
+        alert('Your scores have been updated!');
+      }
     });
   }
 
@@ -114,6 +118,7 @@ export class RequestsService {
   }
 
   private postRequest(params) {
+    console.log(params)
     return this.http.post(this.url + params.url, params.data);
   }
 

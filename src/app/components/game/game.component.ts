@@ -64,7 +64,7 @@ export class GameComponent implements OnInit {
 
     this.err = "";
 
-    this.requests.updateBets(this.handicap, this.frontSideBet, this.settings.gameSettings['session']['session']);
+    this.requests.updateBets(this.player['username'], this.handicap, this.frontSideBet, this.settings.gameSettings['session']['session']);
   }
 
 
